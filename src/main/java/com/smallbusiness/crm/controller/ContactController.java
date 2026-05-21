@@ -1,16 +1,14 @@
 package com.smallbusiness.crm.controller;
 
 import com.smallbusiness.crm.entity.Contact;
-import com.smallbusiness.crm.service.ContactService;
 import com.smallbusiness.crm.service.CompanyService;
+import com.smallbusiness.crm.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 
 @Controller
 @RequestMapping("/contacts")

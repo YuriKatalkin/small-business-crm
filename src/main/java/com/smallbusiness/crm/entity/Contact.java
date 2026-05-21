@@ -1,15 +1,13 @@
 package com.smallbusiness.crm.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "contacts")
@@ -18,23 +16,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Contact {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String lastName;
 
-    @Column(nullable = false, unique = true)
-    @Email
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    private String phoneNumber;
+    @Column(length = 20)
+    private String phoneNumber; // В SQL: phone_number
 
-    private String mobilePhone;
+    @Column(length = 20)
+    private String mobilePhone; // В SQL: mobile_phone
 
     @Column(columnDefinition = "TEXT")
     private String position;
@@ -48,22 +48,32 @@ public class Contact {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ContactStatus status;
+    private ContactStatus status = ContactStatus.ACTIVE;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ContactSource source;
+    private ContactSource source = ContactSource.OTHER;
 
-    private String linkedInProfile;
+    @Column(columnDefinition = "TEXT")
+    private String linkedInProfile; // В SQL: linked_in_profile
 
-    private String skypeId;
+    @Column(length = 100)
+    private String skypeId; // В SQL: skype_id
 
     @Column(columnDefinition = "TEXT")
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    @JoinColumn(name = "owner_id", nullable = false) // В SQL это поле NOT NULL
+    private User owner; // Добавили обязательного владельца контакта
+
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Deal> deals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Task> tasks = new ArrayList<>();
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
@@ -73,15 +83,12 @@ public class Contact {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    public String getFullName() {
-        return firstName + " " + lastName;
-    }
-
+    // Enums для соответствия дефолтным значениям в SQL
     public enum ContactStatus {
-        ACTIVE, INACTIVE, DO_NOT_CONTACT
+        ACTIVE, INACTIVE
     }
 
     public enum ContactSource {
-        PHONE_INQUIRY, EMAIL, WEBSITE, SOCIAL_MEDIA, REFERRAL, ADVERTISEMENT, TRADE_SHOW, OTHER
+        OTHER, COLD_CALL, EMAIL, REFERRAL, WEBSITE
     }
 }

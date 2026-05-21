@@ -1,0 +1,107 @@
+# ==========================================
+# 1. ГЛОБАЛЬНЫЕ НАСТРОЙКИ (Активны всегда)
+# ==========================================
+spring:
+  application:
+    name: small-business-crm
+  profiles:
+    active: local # По умолчанию запускаем локальный Postgres
+
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+
+  mvc:
+    static-path-pattern: /static/**
+    webjars-path-pattern: /webjars/**
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# ==========================================
+# 2. ПРОФИЛЬ: local (Для разработки на ПК)
+# ==========================================
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/crm_db
+    username: crm_user
+    password: crm_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+logging:
+  level:
+    root: INFO
+    com.smallbusiness: DEBUG
+    org.hibernate.SQL: DEBUG
+
+# ==========================================
+# 3. ПРОФИЛЬ: test (Для запуска в H2)
+# ==========================================
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+# ==========================================
+# 4. ПРОФИЛЬ: prod (Для Docker / Деплоя)
+# ==========================================
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:crm_db}
+    username: ${DB_USER:crm_user}
+    password: ${DB_PASSWORD:crm_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    root: WARN
+    com.smallbusiness: INFO
+  file:
+    name: logs/crm-system.log
+    max-size: 10MB
+    max-history: 30
