@@ -92,3 +92,4 @@ public class Contact {
         OTHER, COLD_CALL, EMAIL, REFERRAL, WEBSITE
     }
 }
+
