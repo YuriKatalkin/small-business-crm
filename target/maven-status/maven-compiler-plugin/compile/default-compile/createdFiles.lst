@@ -12,6 +12,7 @@ com\smallbusiness\crm\entity\User.class
 com\smallbusiness\crm\entity\Task$TaskStatus.class
 com\smallbusiness\crm\entity\Deal$DealBuilder.class
 com\smallbusiness\crm\repository\ActivityRepository.class
+com\smallbusiness\crm\controller\TaskController.class
 com\smallbusiness\crm\controller\DealController.class
 com\smallbusiness\crm\service\CompanyService.class
 com\smallbusiness\crm\entity\Contact.class
@@ -44,5 +45,6 @@ com\smallbusiness\crm\entity\Deal$DealStage.class
 com\smallbusiness\crm\repository\ContactRepository.class
 com\smallbusiness\crm\SmallBusinessCrmApplication.class
 com\smallbusiness\crm\service\ContactService.class
+com\smallbusiness\crm\controller\HomeController.class
 com\smallbusiness\crm\entity\User$UserBuilder.class
 com\smallbusiness\crm\service\DealService.class

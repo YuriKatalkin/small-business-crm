@@ -23,16 +23,16 @@ public class DashboardController {
 
     @GetMapping("/dashboard")
     public String showDashboard(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        // Получаем текущего пользователя
         User currentUser = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
-        // Добавляем данные в модель
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("contactCount", contactService.getAllContacts(currentUser).size());
         model.addAttribute("wonAmount", dealService.getTotalWonAmount(currentUser));
         model.addAttribute("pipelineAmount", dealService.getPipelineAmount(currentUser));
         model.addAttribute("completedTasks", taskService.getCompletedTasksCount(currentUser));
+        model.addAttribute("recentContacts", contactService.getRecentContacts(currentUser));
+        model.addAttribute("upcomingTasks", taskService.getUpcomingTasks(currentUser));
 
         return "dashboard";
     }

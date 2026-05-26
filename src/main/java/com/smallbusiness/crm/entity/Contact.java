@@ -31,10 +31,10 @@ public class Contact {
     private String email;
 
     @Column(length = 20)
-    private String phoneNumber; // В SQL: phone_number
+    private String phoneNumber;
 
     @Column(length = 20)
-    private String mobilePhone; // В SQL: mobile_phone
+    private String mobilePhone;
 
     @Column(columnDefinition = "TEXT")
     private String position;
@@ -42,7 +42,8 @@ public class Contact {
     @Column(columnDefinition = "TEXT")
     private String department;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    // Убрали PERSIST, чтобы Hibernate не пытался сохранять пустую компанию
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinColumn(name = "company_id")
     private Company company;
 
@@ -55,17 +56,17 @@ public class Contact {
     private ContactSource source = ContactSource.OTHER;
 
     @Column(columnDefinition = "TEXT")
-    private String linkedInProfile; // В SQL: linked_in_profile
+    private String linkedInProfile;
 
     @Column(length = 100)
-    private String skypeId; // В SQL: skype_id
+    private String skypeId;
 
     @Column(columnDefinition = "TEXT")
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false) // В SQL это поле NOT NULL
-    private User owner; // Добавили обязательного владельца контакта
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
@@ -83,13 +84,6 @@ public class Contact {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // Enums для соответствия дефолтным значениям в SQL
-    public enum ContactStatus {
-        ACTIVE, INACTIVE
-    }
-
-    public enum ContactSource {
-        OTHER, COLD_CALL, EMAIL, REFERRAL, WEBSITE
-    }
+    public enum ContactStatus { ACTIVE, INACTIVE }
+    public enum ContactSource { OTHER, COLD_CALL, EMAIL, REFERRAL, WEBSITE }
 }
-

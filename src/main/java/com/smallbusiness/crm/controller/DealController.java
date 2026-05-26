@@ -1,11 +1,8 @@
 package com.smallbusiness.crm.controller;
 
-import com.smallbusiness.crm.entity.Deal;
-import com.smallbusiness.crm.entity.User;
+import com.smallbusiness.crm.entity.*;
 import com.smallbusiness.crm.security.CustomUserDetails;
-import com.smallbusiness.crm.service.DealService;
-import com.smallbusiness.crm.service.ContactService;
-import com.smallbusiness.crm.service.CompanyService;
+import com.smallbusiness.crm.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -21,18 +18,16 @@ public class DealController {
     private final CompanyService companyService;
 
     private User extractUser(Authentication authentication) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getUser();
+        return ((CustomUserDetails) authentication.getPrincipal()).getUser();
     }
 
     @GetMapping
     public String listDeals(Model model, @RequestParam(required = false) String stage, Authentication authentication) {
-        User currentOwner = extractUser(authentication);
+        User user = extractUser(authentication);
         if (stage != null && !stage.isEmpty()) {
-            // Исправлено: изменен порядок параметров на (stage, owner) согласно логике DealService
-            model.addAttribute("deals", dealService.getDealsByStage(Deal.DealStage.valueOf(stage), currentOwner));
+            model.addAttribute("deals", dealService.getDealsByStage(Deal.DealStage.valueOf(stage), user));
         } else {
-            model.addAttribute("deals", dealService.getAllDeals(currentOwner));
+            model.addAttribute("deals", dealService.getAllDeals(user));
         }
         model.addAttribute("stages", Deal.DealStage.values());
         model.addAttribute("selectedStage", stage);
@@ -41,40 +36,56 @@ public class DealController {
 
     @GetMapping("/new")
     public String createDealForm(Model model, Authentication authentication) {
-        User currentOwner = extractUser(authentication);
+        User user = extractUser(authentication);
         model.addAttribute("deal", new Deal());
-        model.addAttribute("contacts", contactService.getAllContacts(currentOwner));
-        model.addAttribute("companies", companyService.getAllCompanies(currentOwner));
+        model.addAttribute("contacts", contactService.getAllContacts(user));
+        model.addAttribute("companies", companyService.getAllCompanies(user));
         model.addAttribute("stages", Deal.DealStage.values());
+        model.addAttribute("statuses", Deal.DealStatus.values());
         return "deals/form";
     }
 
     @PostMapping
-    public String saveDeal(@ModelAttribute Deal deal, Authentication authentication) {
-        User currentOwner = extractUser(authentication);
-        deal.setOwner(currentOwner);
+    public String saveDeal(@ModelAttribute Deal deal,
+                           @RequestParam Long contactId,
+                           @RequestParam(required = false) Long companyId,
+                           Authentication authentication) {
+        User user = extractUser(authentication);
+        deal.setOwner(user);
+        contactService.getContactById(contactId, user).ifPresent(deal::setContact);
+        if (companyId != null) {
+            companyService.getCompanyById(companyId, user).ifPresent(deal::setCompany);
+        }
         dealService.createDeal(deal);
         return "redirect:/deals";
     }
 
     @GetMapping("/{id}/edit")
     public String editDealForm(@PathVariable Long id, Model model, Authentication authentication) {
-        User currentOwner = extractUser(authentication);
-        // Исправлено: вызов getDealById вместо несуществующего getDealByIdAndOwner
-        Deal deal = dealService.getDealById(id, currentOwner)
+        User user = extractUser(authentication);
+        Deal deal = dealService.getDealById(id, user)
                 .orElseThrow(() -> new IllegalArgumentException("Сделка не найдена"));
         model.addAttribute("deal", deal);
-        model.addAttribute("contacts", contactService.getAllContacts(currentOwner));
-        model.addAttribute("companies", companyService.getAllCompanies(currentOwner));
+        model.addAttribute("contacts", contactService.getAllContacts(user));
+        model.addAttribute("companies", companyService.getAllCompanies(user));
         model.addAttribute("stages", Deal.DealStage.values());
+        model.addAttribute("statuses", Deal.DealStatus.values());
         return "deals/form";
     }
 
     @PostMapping("/{id}")
-    public String updateDeal(@PathVariable Long id, @ModelAttribute Deal deal, Authentication authentication) {
-        User currentOwner = extractUser(authentication);
+    public String updateDeal(@PathVariable Long id,
+                             @ModelAttribute Deal deal,
+                             @RequestParam Long contactId,
+                             @RequestParam(required = false) Long companyId,
+                             Authentication authentication) {
+        User user = extractUser(authentication);
         deal.setId(id);
-        deal.setOwner(currentOwner);
+        deal.setOwner(user);
+        contactService.getContactById(contactId, user).ifPresent(deal::setContact);
+        if (companyId != null) {
+            companyService.getCompanyById(companyId, user).ifPresent(deal::setCompany);
+        }
         dealService.updateDeal(deal);
         return "redirect:/deals";
     }

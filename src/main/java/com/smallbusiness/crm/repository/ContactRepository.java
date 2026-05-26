@@ -16,6 +16,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
     List<Contact> findByOwnerAndFirstNameContainingIgnoreCase(User owner, String firstName);
     List<Contact> findByOwnerAndLastNameContainingIgnoreCase(User owner, String lastName);
     Optional<Contact> findByIdAndOwner(Long id, User owner);
+    List<Contact> findTop5ByOwnerOrderByCreatedAtDesc(User owner);
     
     @Query("SELECT c FROM Contact c WHERE c.owner = :owner AND (LOWER(c.firstName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(c.lastName) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(c.email) LIKE LOWER(CONCAT('%', :search, '%')))")
     List<Contact> searchContacts(@Param("owner") User owner, @Param("search") String search);

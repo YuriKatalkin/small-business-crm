@@ -16,10 +16,12 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByAssignedTo(User user);
     List<Task> findByAssignedToAndStatus(User user, Task.TaskStatus status);
     Optional<Task> findByIdAndAssignedTo(Long id, User user);
-    
+
+    List<Task> findTop5ByAssignedToAndStatusOrderByDueDateAsc(User user, Task.TaskStatus status);
+
     @Query("SELECT t FROM Task t WHERE t.assignedTo = :user AND t.dueDate BETWEEN :startDate AND :endDate ORDER BY t.dueDate ASC")
     List<Task> findTasksForDateRange(@Param("user") User user, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
-    
+
     @Query("SELECT COUNT(t) FROM Task t WHERE t.assignedTo = :user AND t.status = 'COMPLETED'")
     Long countCompletedTasks(@Param("user") User user);
 }

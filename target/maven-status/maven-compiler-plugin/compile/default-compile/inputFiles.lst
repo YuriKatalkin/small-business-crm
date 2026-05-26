@@ -1,4 +1,5 @@
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\repository\DealRepository.java
+C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\controller\TaskController.java
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\controller\AuthController.java
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\config\DataInitializer.java
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\repository\ContactRepository.java
@@ -7,6 +8,7 @@ C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\c
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\service\CompanyService.java
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\exception\GlobalExceptionHandler.java
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\SmallBusinessCrmApplication.java
+C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\controller\HomeController.java
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\controller\CompanyController.java
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\service\ContactService.java
 C:\Users\katal\IdeaProjects\small-business-crm\src\main\java\com\smallbusiness\crm\repository\TaskRepository.java

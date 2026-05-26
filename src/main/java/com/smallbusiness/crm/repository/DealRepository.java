@@ -15,15 +15,14 @@ import java.util.Optional;
 public interface DealRepository extends JpaRepository<Deal, Long> {
     List<Deal> findByOwner(User owner);
     List<Deal> findByOwnerAndStage(User owner, Deal.DealStage stage);
-    List<Deal> findByOwnerAndStatus(User owner, Deal.DealStatus status);
     Optional<Deal> findByIdAndOwner(Long id, User owner);
-    
+
     @Query("SELECT SUM(d.amount) FROM Deal d WHERE d.owner = :owner AND d.stage = 'CLOSED_WON'")
     BigDecimal calculateTotalWonAmount(@Param("owner") User owner);
-    
+
     @Query("SELECT COUNT(d) FROM Deal d WHERE d.owner = :owner AND d.stage = 'CLOSED_WON'")
     Long countClosedDeals(@Param("owner") User owner);
-    
+
     @Query("SELECT SUM(d.amount) FROM Deal d WHERE d.owner = :owner AND d.status = 'OPEN'")
     BigDecimal calculatePipelineAmount(@Param("owner") User owner);
 }

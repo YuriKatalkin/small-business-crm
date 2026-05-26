@@ -49,4 +49,13 @@ public class TaskService {
         Long count = taskRepository.countCompletedTasks(user);
         return count != null ? count : 0L;
     }
+
+    // Ищем новые задачи (NOT_STARTED), которые мы только что создали
+    public List<Task> getUpcomingTasks(User user) {
+        return taskRepository.findTop5ByAssignedToAndStatusOrderByDueDateAsc(user, Task.TaskStatus.NOT_STARTED);
+    }
+
+    public Task saveTask(Task task) {
+        return taskRepository.save(task);
+    }
 }

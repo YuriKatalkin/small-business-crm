@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${contact.id == null ? 'Новый контакт' : 'Редактирование контакта'}">Контакт</title>
+    <div th:replace="~{fragments/layout :: header(${contact.id == null ? 'Новый контакт' : 'Редактирование контакта'})}"></div>
+</head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 mb-5">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0" th:text="${contact.id == null ? 'Создание нового контакта' : 'Карточка контакта'}">Контакт</h4>
+                </div>
+                <div class="card-body">
+
+                    <form th:action="${contact.id == null} ? '/contacts' : '/contacts/' + ${contact.id}" th:object="${contact}" method="post">
+
+                        <input type="hidden" name="redirect" th:value="${redirectUrl}" />
+                        <input type="hidden" th:field="*{id}" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label fw-bold">Имя</label>
+                                <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required placeholder="Иван">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label fw-bold">Фамилия</label>
+                                <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required placeholder="Иванов">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label fw-bold">Email</label>
+                                <input type="email" id="email" th:field="*{email}" class="form-control" required placeholder="example@mail.com">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="phoneNumber" class="form-label fw-bold">Телефон</label>
+                                <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" placeholder="+7 (999) 000-00-00">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="position" class="form-label fw-bold">Должность</label>
+                                <input type="text" id="position" th:field="*{position}" class="form-control" placeholder="Менеджер">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="companyId" class="form-label fw-bold">Компания</label>
+                                <select id="companyId" name="companyId" class="form-select">
+                                    <option value="">Не выбрана</option>
+                                    <option th:each="comp : ${companies}"
+                                            th:value="${comp.id}"
+                                            th:text="${comp.name}"
+                                            th:selected="${contact.company != null && contact.company.id == comp.id}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="status" class="form-label fw-bold">Статус</label>
+                                <select id="status" th:field="*{status}" class="form-select">
+                                    <option value="ACTIVE">ACTIVE</option>
+                                    <option value="INACTIVE">INACTIVE</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="source" class="form-label fw-bold">Источник</label>
+                                <select id="source" th:field="*{source}" class="form-select">
+                                    <option value="OTHER">OTHER</option>
+                                    <option value="COLD_CALL">COLD_CALL</option>
+                                    <option value="EMAIL">EMAIL</option>
+                                    <option value="REFERRAL">REFERRAL</option>
+                                    <option value="WEBSITE">WEBSITE</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label fw-bold">Заметки</label>
+                            <textarea id="notes" th:field="*{notes}" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div>
+                                <button th:if="${contact.id != null}"
+                                        type="submit"
+                                        th:formaction="'/contacts/' + ${contact.id} + '/delete'"
+                                        class="btn btn-outline-danger"
+                                        onclick="return confirm('Вы уверены, что хотите удалить этот контакт?');">
+                                    Удалить
+                                </button>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a th:href="${redirectUrl != null && !redirectUrl.isEmpty()} ? ${redirectUrl} : '/contacts'" class="btn btn-secondary">Отмена</a>
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

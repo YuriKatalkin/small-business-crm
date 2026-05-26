@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head th:replace="~{fragments/layout :: header('Контакты')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Контакты</h2>
+        <a href="/contacts/new" class="btn btn-primary">Добавить контакт</a>
+    </div>
+
+    <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Email</th>
+            <th>Компания</th>
+            <th style="width: 150px;">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${contacts}">
+            <td th:text="${c.firstName + ' ' + c.lastName}"></td>
+            <td th:text="${c.email}"></td>
+            <td th:text="${c.company != null ? c.company.name : '—'}"></td>
+            <td>
+                <a th:href="'/contacts/' + ${c.id}" class="btn btn-sm btn-info text-white">Просмотр</a>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(contacts)}">
+            <td colspan="4" class="text-center text-muted py-4">Список контактов пуст</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

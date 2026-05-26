@@ -21,6 +21,10 @@ public class DealService {
         return dealRepository.save(deal);
     }
 
+    public Deal updateDeal(Deal deal) {
+        return dealRepository.save(deal);
+    }
+
     public Optional<Deal> getDealById(Long id, User owner) {
         return dealRepository.findByIdAndOwner(id, owner);
     }
@@ -31,14 +35,6 @@ public class DealService {
 
     public List<Deal> getDealsByStage(Deal.DealStage stage, User owner) {
         return dealRepository.findByOwnerAndStage(owner, stage);
-    }
-
-    public List<Deal> getDealsByStatus(Deal.DealStatus status, User owner) {
-        return dealRepository.findByOwnerAndStatus(owner, status);
-    }
-
-    public Deal updateDeal(Deal deal) {
-        return dealRepository.save(deal);
     }
 
     public void deleteDeal(Long id) {

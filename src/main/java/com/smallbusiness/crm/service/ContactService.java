@@ -46,4 +46,8 @@ public class ContactService {
     public long getTotalContacts(User owner) {
         return contactRepository.findByOwner(owner).size();
     }
+
+    public List<Contact> getRecentContacts(User user) {
+        return contactRepository.findTop5ByOwnerOrderByCreatedAtDesc(user);
+    }
 }
