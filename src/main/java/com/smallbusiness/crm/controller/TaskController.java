@@ -60,16 +60,14 @@ public class TaskController {
         return "redirect:/dashboard";
     }
 
-    // НОВЫЙ МЕТОД: Удаление задачи
     @PostMapping("/{id}/delete")
     public String deleteTask(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
         User currentUser = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
-        // Проверяем, существует ли задача и принадлежит ли она текущему пользователю
         Optional<Task> taskOpt = taskService.getTaskById(id, currentUser);
         if (taskOpt.isPresent()) {
-            taskService.deleteTask(id); // Используем твой метод удаления из TaskService
+            taskService.deleteTask(id);
         }
 
         return "redirect:/dashboard";

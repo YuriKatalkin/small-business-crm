@@ -29,20 +29,18 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        // Открываем доступ к страницам входа, регистрации и статическим ресурсам
                         .requestMatchers("/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
-                        // Все остальные запросы требуют обязательной авторизации
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth/login") // Наш кастомный урл страницы входа
-                        .loginProcessingUrl("/auth/login") // Урл, куда летит POST-запрос с формы входа
-                        .defaultSuccessUrl("/dashboard", true) // Куда перенаправлять при успешном входе
+                        .loginPage("/auth/login")
+                        .loginProcessingUrl("/auth/login")
+                        .defaultSuccessUrl("/dashboard", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout")) // Урл для логаута
-                        .logoutSuccessUrl("/auth/login?logout") // Куда кидать после выхода
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
+                        .logoutSuccessUrl("/auth/login?logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()

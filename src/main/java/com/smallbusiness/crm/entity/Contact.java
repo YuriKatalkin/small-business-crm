@@ -42,7 +42,6 @@ public class Contact {
     @Column(columnDefinition = "TEXT")
     private String department;
 
-    // Убрали PERSIST, чтобы Hibernate не пытался сохранять пустую компанию
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
     @JoinColumn(name = "company_id")
     private Company company;

@@ -24,11 +24,9 @@ public class UserRegistrationDto {
     @NotBlank(message = "Фамилия не может быть пустой")
     private String lastName;
 
-    // Пустой конструктор для Thymeleaf
     public UserRegistrationDto() {
     }
 
-    // Полный конструктор
     public UserRegistrationDto(String username, String password, String email, String firstName, String lastName) {
         this.username = username;
         this.password = password;
@@ -37,7 +35,6 @@ public class UserRegistrationDto {
         this.lastName = lastName;
     }
 
-    // Геттеры и сеттеры
     public String getUsername() {
         return username;
     }
