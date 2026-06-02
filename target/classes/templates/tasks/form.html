@@ -26,6 +26,18 @@
                             <textarea id="description" th:field="*{description}" class="form-control" rows="3" placeholder="Детали задачи..."></textarea>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="contact" class="form-label fw-bold">Привязать к контакту</label>
+                            <select id="contact" th:field="*{contact.id}" class="form-select">
+                                <option value="">-- Не привязывать к контакту --</option>
+                                <option th:each="c : ${contacts}"
+                                        th:value="${c.id}"
+                                        th:text="${c.firstName + ' ' + c.lastName + ' (' + c.email + ')'}">
+                                    Иван Иванов
+                                </option>
+                            </select>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="dueDate" class="form-label fw-bold">Срок выполнения</label>

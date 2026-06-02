@@ -14,19 +14,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    // Конструктор для внедрения зависимостей
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
-    @Transactional // Обязательно, так как у нас есть ленивая загрузка ролей (Lazy)
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Ищем пользователя в базе
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
-        // ВАЖНО: Возвращаем наш класс CustomUserDetails, а не org.springframework.security.core.userdetails.User
         return new CustomUserDetails(user);
     }
 }

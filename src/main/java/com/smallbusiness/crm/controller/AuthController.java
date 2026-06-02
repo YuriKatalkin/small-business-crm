@@ -57,16 +57,13 @@ public class AuthController {
             return "auth/register";
         }
 
-        // Создаем сущность пользователя
         User user = new User();
         user.setUsername(userDto.getUsername());
-        // Хэшируем пароль перед сохранением в БД
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setEmail(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
 
-        // По умолчанию даем роль MANAGER (она создается скриптом миграции)
         Role defaultRole = roleRepository.findByName("MANAGER")
                 .orElseThrow(() -> new RuntimeException("Роль MANAGER не найдена в базе данных"));
         user.setRoles(Set.of(defaultRole));

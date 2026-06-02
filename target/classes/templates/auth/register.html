@@ -12,7 +12,6 @@
     <div class="card-body p-4">
         <h3 class="card-title text-center mb-4">Регистрация менеджера</h3>
 
-        <!-- Ошибка, если юзер/email уже заняты (глобальная ошибка из контроллера) -->
         <div th:if="${error}" class="alert alert-danger p-2 small text-center" role="alert" th:text="${error}"></div>
 
         <form th:action="@{/auth/register}" th:object="${userDto}" method="post">

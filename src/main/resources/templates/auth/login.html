@@ -12,17 +12,14 @@
     <div class="card-body p-4">
         <h3 class="card-title text-center mb-4">Вход в систему</h3>
 
-        <!-- Сообщение об ошибке авторизации -->
         <div th:if="${param.error}" class="alert alert-danger p-2 small text-center" role="alert">
             Неверный логин или пароль
         </div>
 
-        <!-- Сообщение об успешном выходе из системы -->
         <div th:if="${param.logout}" class="alert alert-info p-2 small text-center" role="alert">
             Вы успешно вышли из системы
         </div>
 
-        <!-- Сообщение об успешной регистрации -->
         <div th:if="${param.success}" class="alert alert-success p-2 small text-center" role="alert">
             Регистрация прошла успешно! Войдите.
         </div>

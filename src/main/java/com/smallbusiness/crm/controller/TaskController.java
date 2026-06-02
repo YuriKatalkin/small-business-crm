@@ -2,8 +2,10 @@ package com.smallbusiness.crm.controller;
 
 import com.smallbusiness.crm.entity.Task;
 import com.smallbusiness.crm.entity.User;
+import com.smallbusiness.crm.entity.Contact;
 import com.smallbusiness.crm.repository.UserRepository;
 import com.smallbusiness.crm.service.TaskService;
+import com.smallbusiness.crm.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -20,12 +23,20 @@ public class TaskController {
 
     private final TaskService taskService;
     private final UserRepository userRepository;
+    private final ContactService contactService;
 
     @GetMapping("/new")
-    public String createTaskForm(Model model) {
+    public String createTaskForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User currentUser = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+
         Task task = new Task();
         task.setStatus(Task.TaskStatus.NOT_STARTED);
+
+        List<Contact> userContacts = contactService.getAllContacts(currentUser);
+
         model.addAttribute("task", task);
+        model.addAttribute("contacts", userContacts);
         return "tasks/form";
     }
 
@@ -39,7 +50,10 @@ public class TaskController {
             return "redirect:/dashboard";
         }
 
+        List<Contact> userContacts = contactService.getAllContacts(currentUser);
+
         model.addAttribute("task", taskOpt.get());
+        model.addAttribute("contacts", userContacts);
         return "tasks/form";
     }
 
@@ -55,6 +69,10 @@ public class TaskController {
         if (task.getType() == null) task.setType(Task.TaskType.OTHER);
         if (task.getPriority() == null) task.setPriority(Task.TaskPriority.MEDIUM);
 
+        if (task.getContact() != null && task.getContact().getId() == null) {
+            task.setContact(null);
+        }
+
         taskService.saveTask(task);
 
         return "redirect:/dashboard";
@@ -68,6 +86,21 @@ public class TaskController {
         Optional<Task> taskOpt = taskService.getTaskById(id, currentUser);
         if (taskOpt.isPresent()) {
             taskService.deleteTask(id);
+        }
+
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/{id}/complete")
+    public String completeTask(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        User currentUser = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+
+        Optional<Task> taskOpt = taskService.getTaskById(id, currentUser);
+        if (taskOpt.isPresent()) {
+            Task task = taskOpt.get();
+            task.setStatus(Task.TaskStatus.COMPLETED);
+            taskService.saveTask(task);
         }
 
         return "redirect:/dashboard";

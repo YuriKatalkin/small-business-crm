@@ -24,7 +24,6 @@ public class CompanyController {
     @GetMapping
     public String listCompanies(Model model, @RequestParam(required = false) String search, Authentication authentication) {
         User currentOwner = extractUser(authentication);
-        // Исправлено: аргументы приведены к порядку (searchTerm, owner) как в сервисе
         model.addAttribute("companies", companyService.searchCompanies(search, currentOwner));
         model.addAttribute("search", search);
         return "companies/list";
@@ -46,7 +45,6 @@ public class CompanyController {
     @GetMapping("/{id}/edit")
     public String editCompanyForm(@PathVariable Long id, Model model, Authentication authentication) {
         User currentOwner = extractUser(authentication);
-        // Исправлено: имя метода изменено на getCompanyById в соответствии с CompanyService
         Company company = companyService.getCompanyById(id, currentOwner)
                 .orElseThrow(() -> new IllegalArgumentException("Компания не найдена или доступ запрещен"));
         model.addAttribute("company", company);

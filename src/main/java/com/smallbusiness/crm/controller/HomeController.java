@@ -8,7 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String index() {
-        // Перенаправляем пользователя на страницу сделок при входе
         return "redirect:/deals";
     }
 }
